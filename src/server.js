@@ -11,6 +11,7 @@ const app = express();
 
 const allowedOrigins = [
   'https://behomes-1.onrender.com',
+  "https://demo-behomes.onrender.com",
   'http://localhost:3000',
   'http://localhost:5000'
 ];
