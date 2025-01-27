@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const Pdf = require('../models/Pdf');
+const Pdf = require('../models/Presentation');
 const mongoose = require('mongoose')
 
 const fileFilter = (req, file, cb) => {
