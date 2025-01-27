@@ -168,7 +168,7 @@ router.post('/upload', upload.single('cadFile'), async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }
-        const tempDir = path.join(__dirname, 'src', 'temp');
+        const tempDir = path.join('/tmp')
 
 
         // Ensure temp directory exists
