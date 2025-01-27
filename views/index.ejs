@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <% datas.forEach(data=> { %>
+
+        <a target="_blank" href="/basicDrawing/view/<%- data._id %>"><button>View</button></a>
+        <a href="/basicDrawing/download/<%- data._id %>"><button>Dwg Download</button></a>
+        <a href="/basicDrawing/Svg/download/<%- data._id %>"><button>Svg Download</button></a>
+        <% }); %>
+
+            <script>
+                async function viewFile() {
+                    // Display the viewer
+                    const viewerUrl = `/basicDrawing/view/${data.fileId}`;
+                    document.getElementById('viewer').src = viewerUrl;
+                    document.getElementById('view-download').style.display = 'block';
+                }
+
+                function downloadFile(filePath) {
+                    const filename = filePath.split('/').pop();
+                    window.location.href = `/basicDrawing/download/${filename}`;
+                }
+            </script>
+</body>
+
+</html>
