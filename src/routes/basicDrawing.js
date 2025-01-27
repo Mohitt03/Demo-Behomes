@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: false }))
 // Multer configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './src/temp'); // Save files in the temp folder
+        cb(null, '/tmp'); // Save files in the temp folder
     },
     filename: (req, file, cb) => {
         // Save the file with its original name
