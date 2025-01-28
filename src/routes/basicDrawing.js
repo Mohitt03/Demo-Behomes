@@ -197,6 +197,7 @@ router.post('/upload', upload.single('cadFile'), async (req, res) => {
 
         // Read the converted file as a buffer
         const svgBuffer = fs.readFileSync(svgFilePath);
+        const dwgBuffer = fs.readFileSync(dwgFilePath);
 
         // Read both files
         const Projid = '678b1aca07e57cdf6ce5697c';
@@ -205,7 +206,7 @@ router.post('/upload', upload.single('cadFile'), async (req, res) => {
         const newFile = new CadFile({
             dwgFileName: req.file.originalname,
             svgFileName: svgName,
-            dwgFileData: req.file.buffer,
+            dwgFileData: dwgBuffer,
             svgFileData: svgBuffer,
             ProjectId: Projid
         });
@@ -238,14 +239,11 @@ router.get('/download/:id', async (req, res) => {
 
         // Set headers for download
         res.set({
-            'Content-Type': 'application/octet-stream',
+            'Content-Type': 'application/acad',
             'Content-Disposition': `attachment; filename="${file.dwgFileName}"`,
         });
 
-        res.status(200).json({
-            msg: "Success",
-            fileData: file.dwgFileData.toString('base64')
-        })
+        return res.send(file.dwgFileData);
 
     } catch (err) {
         console.error(err);
@@ -269,10 +267,7 @@ router.get('/Svg/download/:id', async (req, res) => {
             'Content-Disposition': `attachment; filename="${file.svgFileName}"`,
         })
 
-        res.status(200).json({
-            msg: "Success",
-            fileData: file.svgFileData.toString('base64')
-        })
+        return res.send(file.svgFileData);
 
     } catch (err) {
         console.error(err);
@@ -313,10 +308,9 @@ router.get('/view/:id', async (req, res) => {
         // Send the SVG file as a response  
         res.set('Content-Type', 'image/svg+xml');
         // res.status(200).send(Buffer.from(file.svgFileData, 'base64'));
-        res.status(200).json({
-            msg: "Success",
-            file: file.svgFileData.toString('base64')
-        });
+        // console.log(file);
+
+        res.status(200).send(file.svgFileData);
 
 
     } catch (err) {
