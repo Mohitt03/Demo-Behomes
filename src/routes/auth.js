@@ -9,46 +9,38 @@ const app = express();
 app.use(express.json());
 
 
-router.get('/view/all', async (req, res) => {
+router.get('/user', async (req, res) => {
     try {
-        const file = await User.find();
-
-        // res.render('index', { datas: file })
+        const response = await User.find();
+        if (!response) {
+            return res.status(404).send('File not found');
+        }
         res.status(200).json({
-            files: file
+            Users: response
         });
 
 
-
-        if (!file) {
-            return res.status(404).send('File not found');
-        }
-        // res.render('index',{files:file.data})
-        // Send the SVG file as a response
-        // res.set('Content-Type', 'image/svg+xml');
-        // res.send(Buffer.from(file.svgContent, 'base64'));
     } catch (err) {
-        res.status(500).send('Error retrieving file from database');
+        console.log(err.message);
+        res.status(500).send(err.message);
     }
 });
 
 
-// Endpoint to retrieve and serve SVG file
-router.get('/view/:id', async (req, res) => {
+// Endpoint to retrieve and serve User
+router.get('/user/:id', async (req, res) => {
     try {
-        const file = await User.findById(req.params.id);
-        res.status(200).json({
-            files: file
-        });
+        const response = await User.findById(req.params.id);
 
-        if (!file) {
+        if (!response) {
             return res.status(404).send('File not found');
         }
-        res.status(200);
 
+        res.status(200).json({ User: response });
 
     } catch (err) {
-        res.status(500).send('Error retrieving file from database');
+        console.log(err.message);
+        res.status(500).send(err.message);
     }
 });
 

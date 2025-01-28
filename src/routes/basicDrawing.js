@@ -38,22 +38,11 @@ const upload = multer({
         // Allow only DWG files
         if (path.extname(file.originalname).toLowerCase() === '.dwg') {
             cb(null, true);
-        } else {
-            cb(new Error('Only DWG files are allowed!'), false);
+            console.log(path.extname(file.originalname).toLowerCase());
+            
         }
     },
     limits: { fileSize: 10 * 1024 * 1024 }, // Limit file size to 10MB
-});
-
-// To get Uploader Page
-router.get('/upload', (req, res) => {
-    try {
-        res.status(200).render('upload', { data: { message: 'Success' } });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ message: 'Error retrieving files' });
-    }
 });
 
 
@@ -170,7 +159,8 @@ router.post('/upload/:id', upload.single('cadFile'), async (req, res) => {
         }
         const tempDir = path.join('/tmp')
         console.log(req.params.id);
-        
+        const Extension_Name =path.extname(req.file.originalname).toLowerCase()
+        console.log(Extension_Name);
 
         // Ensure temp directory exists
         if (!fs.existsSync(tempDir)) {
