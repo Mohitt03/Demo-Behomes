@@ -11,9 +11,17 @@ const fileSchema = new mongoose.Schema({
     dwgFileData: Buffer,
     svgFileData: Buffer,
     contentType: String,
-    createdDate: {
+    uploadDate: {
         type: Date,
         default: Date.now
+    },
+    status: {
+        type: String,
+        enum: [
+            "Finalized",
+            "Not-Finalized"
+        ],
+        default: "Not-Finalized"
     }
 });
 

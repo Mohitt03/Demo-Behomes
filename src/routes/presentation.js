@@ -87,18 +87,21 @@ router.get('/files/proj/:id', async (req, res) => {
 });
 
 // Handle file upload
-router.post('/upload', upload.single('pdf'), async (req, res) => {
+router.post('/upload/:id', upload.single('pdf'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ message: 'No file uploaded' });
         }
         console.log(req.file);
 
+        projectid = req.params.id
+
 
         const newPdf = new Pdf({
             name: req.file.originalname,
             data: req.file.buffer,
-            contentType: req.file.mimetype
+            contentType: req.file.mimetype,
+            ProjectId: projectid
         });
 
         await newPdf.save();

@@ -92,7 +92,7 @@ router.get('/files', async (req, res) => {
 // History of the document
 router.get('/history', async (req, res) => {
     try {
-        const File = await CadFile.find({}, "createdDate"); // Fetch one document, including only the uploadDate field
+        const File = await CadFile.find({}, "uploadDate"); // Fetch one document, including only the uploadDate field
         res.status(200).json(File); // Respond with the found document
     } catch (error) {
         res.status(500).json({ message: 'Error fetching PDFs', error: error.message });
@@ -153,7 +153,7 @@ router.get('/files/proj/:id', async (req, res) => {
 // History of the document
 router.get('/history', async (req, res) => {
     try {
-        const File = await CadFile.find({}, "createdDate"); // Fetch one document, including only the uploadDate field
+        const File = await CadFile.find({}, "uploadDate"); // Fetch one document, including only the uploadDate field
         res.status(200).json(File); // Respond with the found document
     } catch (error) {
         res.status(500).json({ message: 'Error fetching PDFs', error: error.message });
@@ -161,7 +161,7 @@ router.get('/history', async (req, res) => {
 });
 
 
-router.post('/upload', upload.single('cadFile'), async (req, res) => {
+router.post('/upload/:id', upload.single('cadFile'), async (req, res) => {
 
     try {
 
@@ -169,7 +169,8 @@ router.post('/upload', upload.single('cadFile'), async (req, res) => {
             return res.status(400).json({ error: 'No file uploaded' });
         }
         const tempDir = path.join('/tmp')
-
+        console.log(req.params.id);
+        
 
         // Ensure temp directory exists
         if (!fs.existsSync(tempDir)) {
@@ -200,7 +201,7 @@ router.post('/upload', upload.single('cadFile'), async (req, res) => {
         const dwgBuffer = fs.readFileSync(dwgFilePath);
 
         // Read both files
-        const Projid = '678b1aca07e57cdf6ce5697c';
+        const Projid = req.params.id;
 
         // Step 2: Save both the original .dwg and converted .svg to MongoDB
         const newFile = new CadFile({

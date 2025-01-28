@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
-// const Project = require('../models/Project')
+const Project = require('../models/Project')
 
 const pdfSchema = new mongoose.Schema({
-    // ProjectId: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Project" // Reference to the Pdf model
-    // },
+    ProjectId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project" // Reference to the Pdf model
+    },
     name: String,
     data: Buffer,
     contentType: String,
