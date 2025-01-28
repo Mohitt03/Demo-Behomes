@@ -23,4 +23,4 @@ const pdfSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('PresentationPdf', pdfSchema);
+module.exports = mongoose.model('QuotationPdf', pdfSchema);

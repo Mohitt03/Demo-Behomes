@@ -39,7 +39,6 @@ const upload = multer({
         if (path.extname(file.originalname).toLowerCase() === '.dwg') {
             cb(null, true);
             console.log(path.extname(file.originalname).toLowerCase());
-            
         }
     },
     limits: { fileSize: 10 * 1024 * 1024 }, // Limit file size to 10MB
@@ -159,7 +158,7 @@ router.post('/upload/:id', upload.single('cadFile'), async (req, res) => {
         }
         const tempDir = path.join('/tmp')
         console.log(req.params.id);
-        const Extension_Name =path.extname(req.file.originalname).toLowerCase()
+        const Extension_Name = path.extname(req.file.originalname).toLowerCase()
         console.log(Extension_Name);
 
         // Ensure temp directory exists
@@ -283,6 +282,31 @@ router.get('/view/all', async (req, res) => {
         // res.send(Buffer.from(file.svgContent, 'base64'));
     } catch (err) {
         res.status(500).send('Error retrieving file from database');
+    }
+});
+
+
+router.get('/view/proj/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+
+        const query = {};
+        // console.log(id);
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            query.ProjectId = id;
+        } else {
+            query.projectId = id;
+        }
+
+        const files = await CadFile.find(query).exec();    
+        res.status(200).json({
+            files: files,
+            message: 'Success'
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: 'Error retrieving files' });
     }
 });
 
