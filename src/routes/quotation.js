@@ -74,7 +74,7 @@ router.get('/files/proj/:id', async (req, res) => {
         }
         console.log(query);
 
-        const files = await CadFile.findOne(Pdf, '-data').exec();
+        const files = await Pdf.find(query, '-data').exec();
         res.status(200).json({
             files: files,
             message: 'Success'
