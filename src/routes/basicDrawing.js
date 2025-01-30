@@ -251,6 +251,7 @@ router.post('/Mul/upload/:id', upload.array('cadFiles', 10), async (req, res) =>
 
             // Save the converted SVG to the temp folder
             await result.file.save(svgFilePath);
+            console.log("Done 3 ");
 
             // Read file data
             const svgBuffer = fs.readFileSync(svgFilePath);
