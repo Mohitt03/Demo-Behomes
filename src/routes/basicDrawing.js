@@ -217,6 +217,71 @@ router.post('/upload/:id', upload.single('cadFile'), async (req, res) => {
 });
 
 
+router.post('/Mul/upload/:id', upload.array('cadFiles', 10), async (req, res) => {
+    try {
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ error: 'No files uploaded' });
+        }
+
+        const tempDir = path.join('/tmp');
+
+        // Ensure temp directory exists
+        if (!fs.existsSync(tempDir)) {
+            await fs.promises.mkdir(tempDir, { recursive: true }).catch((err) => {
+                console.error('Failed to create temp directory:', err);
+                throw new Error('Could not create temp directory');
+            });
+        }
+
+        const Projid = req.params.id;
+        let savedFiles = [];
+
+        // Process each uploaded file
+        for (const file of req.files) {
+            const extensionName = path.extname(file.originalname).toLowerCase();
+            const editExtensionName = extensionName.slice(-3)
+            console.log('Processing File:', file.originalname, 'Extension:', extensionName);
+
+            const dwgFilePath = path.join(tempDir, file.originalname);
+
+            // Convert DWG to SVG
+            const result = await convertapi.convert('svg', { File: dwgFilePath }, editExtensionName);
+
+            const svgFilePath = path.join(tempDir, `${path.parse(file.originalname).name}.svg`);
+
+            // Save the converted SVG to the temp folder
+            await result.file.save(svgFilePath);
+
+            // Read file data
+            const svgBuffer = fs.readFileSync(svgFilePath);
+            const dwgBuffer = fs.readFileSync(dwgFilePath);
+
+            // Save to MongoDB
+            const newFile = new CadFile({
+                dwgFileName: file.originalname,
+                svgFileName: result.file.fileInfo.FileName,
+                dwgFileData: dwgBuffer,
+                svgFileData: svgBuffer,
+                ProjectId: Projid
+            });
+
+            await newFile.save();
+            savedFiles.push(file.originalname);
+
+            // Clean up temp files
+            fs.unlinkSync(dwgFilePath);
+            fs.unlinkSync(svgFilePath);
+        }
+
+        res.status(200).send({ message: 'Files uploaded successfully', files: savedFiles });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: err.message });
+    }
+});
+
+
 // Route to download the DWG file
 router.get('/download/:id', async (req, res) => {
     try {
