@@ -36,7 +36,7 @@ const upload = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
         // Allow only DWG files
-        if (path.extname(file.originalname).toLowerCase() === '.dwg') {
+        if (path.extname(file.originalname).toLowerCase() === '.dwg' || '.dxf') {
             cb(null, true);
             console.log(path.extname(file.originalname).toLowerCase());
         }
@@ -217,6 +217,7 @@ router.post('/upload/:id', upload.single('cadFile'), async (req, res) => {
 });
 
 
+// For multiple cadfile uploading 
 router.post('/Mul/upload/:id', upload.array('cadFiles', 10), async (req, res) => {
     try {
         if (!req.files || req.files.length === 0) {
